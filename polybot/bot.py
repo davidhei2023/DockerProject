@@ -3,6 +3,7 @@ from loguru import logger
 import os
 import time
 from telebot.types import InputFile
+from polybot.img_proc import Img
 
 
 class Bot:
@@ -63,6 +64,55 @@ class Bot:
         """Bot Main message handler"""
         logger.info(f'Incoming message: {msg}')
         self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
+
+
+class ImageProcessingBot(Bot):
+    def __init__(self, token, telegram_chat_url):
+        super().__init__(token, telegram_chat_url)
+
+    def handle_message(self, message):
+        if "text" in message:
+            self.send_text(message['chat']['id'], f'Your original message: {message["text"]}')
+        else:
+            if "caption" in message:
+                try:
+                    image_path = self.download_user_photo(message)
+                    caption = message["caption"].lower()  # ignore capital or lower case
+                    if caption == "blur":
+                        self.send_text(message['chat']['id'], "Blur filter in progress")
+                        new_image = Img(image_path)
+                        new_image.blur()
+                        new_image_path = new_image.save_img()
+                        self.send_photo(message["chat"]["id"], new_image_path)
+                        self.send_text(message['chat']['id'], "Blur filter applied")
+                    elif caption == "contour":
+                        self.send_text(message['chat']['id'], "Contour filter in progress")
+                        new_image = Img(image_path)
+                        new_image.contour()
+                        new_image_path = new_image.save_img()
+                        self.send_photo(message["chat"]["id"], new_image_path)
+                        self.send_text(message['chat']['id'], "Contour filter applied")
+                    elif caption == "salt and pepper":
+                        self.send_text(message['chat']['id'], "Salt and Pepper filter in progress")
+                        new_image = Img(image_path)
+                        new_image.salt_n_pepper()
+                        new_image_path = new_image.save_img()
+                        self.send_photo(message["chat"]["id"], new_image_path)
+                        self.send_text(message['chat']['id'], "Salt and Pepper filter applied")
+                    elif caption == "dreamy enhance":  # New filter
+                        self.send_text(message['chat']['id'], "Dreamy Enhance filter in progress")
+                        new_image = Img(image_path)
+                        new_image.dreamy_enhance()
+                        new_image_path = new_image.save_img()
+                        self.send_photo(message["chat"]["id"], new_image_path)
+                        self.send_text(message['chat']['id'], "Dreamy Enhance filter applied")
+                    else:
+                        self.send_text(message['chat']['id'], f'Error, please choose a valid caption')
+                except Exception as error:
+                    logger.info(f"Error {error}")
+                    self.send_text(message['chat']['id'], f'Failed - Try again later')
+            else:
+                self.send_text(message['chat']['id'], f'Failed - Please provide caption')
 
 
 class ObjectDetectionBot(Bot):
