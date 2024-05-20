@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  mongo_1:
+    image: mongo:${MONGO_IMAGE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo1_data:/data/db
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+    command: mongod --replSet myReplicaSet --bind_ip_all
+
+  mongo_2:
+    image: mongo:${MONGO_IMAGE}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo2_data:/data/db
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+    command: mongod --replSet myReplicaSet --bind_ip_all
+
+  mongo_3:
+    image: mongo:${MONGO_IMAGE}
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo3_data:/data/db
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+    command: mongod --replSet myReplicaSet --bind_ip_all
+
+  polybot:
+    image: davidhei/davidhei-repostory-1:polybot-app
+    ports:
+      - "8443:8443"
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+
+  yolo5_app:
+    image: davidhei/davidhei-repostory-1:yolo5-image
+    ports:
+      - "8081:8081"
+    volumes:
+      - ~/.aws/credentials:/root/.aws/credentials:ro
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+
+networks:
+  mongoCluster:
+    driver: bridge
+
+volumes:
+  mongo1_data:
+    driver: local
+  mongo2_data:
+    driver: local
+  mongo3_data:
+    driver: local
