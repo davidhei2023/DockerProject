@@ -18,7 +18,7 @@ images_bucket = os.getenv('BUCKET_NAME')
 with open("data/coco128.yaml", "r") as stream:
     names = yaml.safe_load(stream)['names']
 
-MONGODB_URI = "mongodb://mongo1:27017/"
+MONGODB_URI = "mongodb://mongo_1:27017/"
 DATABASE_NAME = "davidhei-database"
 COLLECTION_NAME = "davidhei-database-collection"
 

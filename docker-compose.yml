@@ -7,13 +7,13 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo1_data:/data/db
-      - ./init-replica-set.sh:/docker-entrypoint-initdb.d/init-replica-set.sh
+      - mongo_1_data:/data/db
+      - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh
     env_file:
       - .env
     networks:
       - mongoCluster
-    command: mongod --replSet myReplicaSet --bind_ip_all
+    command: bash /docker-entrypoint-initdb.d/initiate-replica.sh
 
   mongo_2:
     container_name: mongo_2
@@ -21,7 +21,7 @@ services:
     ports:
       - "27018:27017"
     volumes:
-      - mongo2_data:/data/db
+      - mongo_2_data:/data/db
     env_file:
       - .env
     networks:
@@ -34,7 +34,7 @@ services:
     ports:
       - "27019:27017"
     volumes:
-      - mongo3_data:/data/db
+      - mongo_3_data:/data/db
     env_file:
       - .env
     networks:
@@ -78,9 +78,9 @@ networks:
     driver: bridge
 
 volumes:
-  mongo1_data:
+  mongo_1_data:
     driver: local
-  mongo2_data:
+  mongo_2_data:
     driver: local
-  mongo3_data:
+  mongo_3_data:
     driver: local
