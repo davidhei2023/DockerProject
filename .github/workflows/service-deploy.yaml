@@ -81,6 +81,7 @@ jobs:
             POLYBOT_IMG_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
             YOLO5_IMG_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
             TELEGRAM_APP_URL=$NGROK_DOMAIN
+            MONGO_IMAGE=mongo:5
             """ > .env
             
             docker compose down
