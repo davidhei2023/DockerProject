@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Start MongoDB in the background
 mongod --replSet myReplicaSet --bind_ip_all &
 
-# Wait for MongoDB to fully start
 sleep 10
 
 echo "Initiating replica set..."
@@ -16,5 +14,4 @@ mongosh --eval "rs.initiate({
   ]
 })"
 
-# Keep the container running by tailing the MongoDB log
 tail -f /dev/null
