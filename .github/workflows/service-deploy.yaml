@@ -19,15 +19,10 @@ jobs:
         run: |
           cd polybot
           
-          # Login to ECR (commend in in case you use ECR, change region code and ECR URI):
-          # export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          # export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 352708296901.dkr.ecr.eu-central-1.amazonaws.com
-          
-          # Login to DockerHub (comment out if you don't use DockerHub):         
-          docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
+          # Login to DockerHub
+          echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
 
-          IMAGE_NAME=polybot-app:${{ github.run_number }}
+          IMAGE_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
@@ -41,13 +36,9 @@ jobs:
         run: |
           cd yolo5
           
-          # export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          # export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 352708296901.dkr.ecr.eu-central-1.amazonaws.com
-               
-          docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
+          echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
 
-          IMAGE_NAME=yolo5-image-v0.2.2:${{ github.run_number }}
+          IMAGE_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
           docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
@@ -78,27 +69,19 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # You deployment script here...
-            
             sudo apt update && sudo apt install jq -y
             
             cd PolybotService/
             
-            # Save telegram bot token in a secret file, to be used in docker-compose.yaml
             echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > telegram_bot_token.secret
             
-            # Get the ngrok current domain (you should assume ngrok is already running in the EC2)
             NGROK_DOMAIN=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
             
-            # Generate .env file
             echo """
-            POLYBOT_IMG_NAME=polybot-app:${{ github.run_number }}
-            YOLO5_IMG_NAME=yolo5-image-v0.2.2:${{ github.run_number }}
+            POLYBOT_IMG_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
+            YOLO5_IMG_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
             TELEGRAM_APP_URL=$NGROK_DOMAIN
             """ > .env
             
-            # Take the service down
             docker compose down
-            
-            # Take it up with the current updated values
             docker compose up -d
