@@ -17,7 +17,7 @@ services:
 
   mongo_2:
     container_name: mongo_2
-    image: mongo:${MONGO_IMAGE}
+    image: ${MONGO_IMAGE}
     ports:
       - "27018:27017"
     volumes:
