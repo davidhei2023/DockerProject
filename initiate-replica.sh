@@ -15,4 +15,3 @@ mongosh --eval "rs.initiate({
 })"
 
 tail -f /dev/null
-
