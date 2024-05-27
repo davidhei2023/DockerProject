@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mongo_1:
     container_name: mongo_1
-    image: mongo:${MONGO_IMAGE}
+    image: ${MONGO_IMAGE}
     ports:
       - "27017:27017"
     volumes:
@@ -30,7 +30,7 @@ services:
 
   mongo_3:
     container_name: mongo_3
-    image: mongo:${MONGO_IMAGE}
+    image: ${MONGO_IMAGE}
     ports:
       - "27019:27017"
     volumes:
@@ -84,6 +84,4 @@ volumes:
     driver: local
   mongo_3_data:
     driver: local
-
-
 
