@@ -82,6 +82,8 @@ jobs:
             YOLO5_IMG_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
             TELEGRAM_APP_URL=$NGROK_DOMAIN
             MONGO_IMAGE=mongo:5
+            YOLO5_URL=http://yolo5_app:8081
+            TELEGRAM_APP_URL=tps://3cd3-13-59-88-73.ngrok-free.app
             """ > .env
             
             docker compose down
