@@ -70,7 +70,7 @@ jobs:
             
             cd PolybotService/
             
-            echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > telegram_bot_token.secret
+            echo "${{ secrets.TELEGRAM_TOKEN }}" > telegram_token.secret
             
             NGROK_DOMAIN=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
             
@@ -87,11 +87,11 @@ jobs:
             yolo5_name=yolo5
             polybot_name=polybot
             
-            mongoCluster
+            mongoCluster=mongoCluster
             driver=bridge
             
             BUCKET_NAME=${{ secrets.BUCKET_NAME }}
-            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
             TELEGRAM_AUTOTOKEN=${{ secrets.TELEGRAM_AUTOTOKEN }}
             """ > .env
             
