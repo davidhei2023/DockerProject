@@ -79,25 +79,19 @@ jobs:
             echo """
             TELEGRAM_APP_URL=${{ secrets.TELEGRAM_APP_URL }}
             
-            # Base image
-            mongodb_image=mongo:4.4.0
-            yolo5_image=${{ secrets.DOCKER_REPO_USERNAME }}/yolo5:${{ github.run_number }}
-            polybot_image=${{ secrets.DOCKER_REPO_USERNAME }}/polybot:${{ github.run_number }}
+            mongodb_image=mongo:5
+            yolo5_image=davidhei/dockerproject/yolo5:${{ github.run_number }}
+            polybot_image=davidhei/dockerproject/polybot:${{ github.run_number }}
             
-            # Container names
-            mongo_primary_container_name=mongodb_primary
-            mongo_secondary_1_container_name=mongodb_secondary_1
-            mongo_secondary_2_container_name=mongodb_secondary_2
-            yolo_container_name=yolo_app
-            polybot_container_name=polybot_app
+            mongo_1_name=mongo_1
+            mongo_2__name=mongo_2
+            mongo_3_name=mongo_3
+            yolo5_name=yolo5
+            polybot_name=polybot
             
-            # Networks names
-            mongodb_replica_set=mongodb_replica_set
-            mongodb_primary_to_yolo=mongodb_primary_to_yolo
-            yolo_to_polybot=yolo_to_polybot
+            mongoCluster
             driver=bridge
             
-            # AWS variables
             BUCKET_NAME=${{ secrets.BUCKET_NAME }}
             TELEGRAM_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
             TELEGRAM_AUTOTOKEN=${{ secrets.TELEGRAM_AUTOTOKEN }}
