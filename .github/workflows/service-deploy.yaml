@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP: 18.224.71.210
+  EC2_PUBLIC_IP: 13.59.88.73
 
 jobs:
   PolybotBuild:
@@ -53,24 +53,39 @@ jobs:
       - name: Checkout the repo code
         uses: actions/checkout@v2
 
-      - name: Copy Compose files and scripts to the EC2
+      - name: Copy Compose files to the EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: |
-            docker-compose.yaml
-            deploy.sh
+          source: docker-compose.yaml
           target: PolybotService/
 
-      - name: Run deploy script on the EC2
+      - name: Update the Docker Compose project in the EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            cd PolybotService
-            chmod +x deploy.sh
-            ./deploy.sh
+            sudo apt update && sudo apt install jq -y
+            
+            cd PolybotService/
+            
+            echo "${{ secrets.TELEGRAM_BOT_TOKEN }}" > telegram_bot_token.secret
+            
+            NGROK_DOMAIN=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
+            
+            echo """
+            POLYBOT_IMG_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
+            YOLO5_IMG_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
+            TELEGRAM_APP_URL=$NGROK_DOMAIN
+            MONGO_IMAGE=mongo:5
+            YOLO5_URL=http://yolo5_app:8081
+            TELEGRAM_APP_URL=tps://3cd3-13-59-88-73.ngrok-free.app
+            """ > .env
+            
+            docker compose down
+            docker compose up -d
+
