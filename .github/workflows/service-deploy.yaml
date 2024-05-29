@@ -6,54 +6,53 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP: 3.18.106.74
+  EC2_PUBLIC_IP: 3.18.223.43  # to be updated
 
 jobs:
   PolybotBuild:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repo code
+      - name: Checkout Repository Code
         uses: actions/checkout@v2
 
-      - name: Build and push image
+      - name: Build and Push Polybot Image
         run: |
           cd polybot
           
-          # Login to DockerHub
-          echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
+          docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
 
-          IMAGE_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+          POLYBOT_IMAGE_NAME=davidhei/dockerproject/polybot:${{ github.run_number }}
+          docker build -t $POLYBOT_IMAGE_NAME .
+          docker push $POLYBOT_IMAGE_NAME
 
   Yolo5Build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repo code
+      - name: Checkout Repository Code
         uses: actions/checkout@v2
 
-      - name: Build and push image
+      - name: Build and Push Yolo5 Image
         run: |
           cd yolo5
           
-          echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
+          docker login -u ${{ secrets.DOCKER_REPO_USERNAME }} -p ${{ secrets.DOCKER_REPO_PASSWORD }}
 
-          IMAGE_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+          YOLO5_IMAGE_NAME=davidhei/dockerproject/yolo5-app:${{ github.run_number }}
+          docker build -t $YOLO5_IMAGE_NAME .
+          docker push $YOLO5_IMAGE_NAME
 
   Deploy:
-    name: Deploy Docker compose project
+    name: Deploy Docker Compose Project
     runs-on: ubuntu-latest
     needs:
       - PolybotBuild
       - Yolo5Build
 
     steps:
-      - name: Checkout the repo code
+      - name: Checkout Repository Code
         uses: actions/checkout@v2
 
-      - name: Copy Compose files to the EC2
+      - name: Copy Compose Files to EC2
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
@@ -62,7 +61,7 @@ jobs:
           source: docker-compose.yaml
           target: PolybotService/
 
-      - name: Update the Docker Compose project in the EC2
+      - name: Update Docker Compose Project on EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.EC2_PUBLIC_IP }}
@@ -78,14 +77,31 @@ jobs:
             NGROK_DOMAIN=$(curl -s localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
             
             echo """
-            POLYBOT_IMG_NAME=davidhei/davidhei-repostory-1:polybot-app-${{ github.run_number }}
-            YOLO5_IMG_NAME=davidhei/davidhei-repostory-1:yolo5-image-v0.2.2-${{ github.run_number }}
-            TELEGRAM_APP_URL=$NGROK_DOMAIN
-            MONGO_IMAGE=mongo:5
-            YOLO5_URL=http://yolo5_app:8081
-            TELEGRAM_APP_URL=tps://3cd3-13-59-88-73.ngrok-free.app
+            TELEGRAM_APP_URL=${{ secrets.TELEGRAM_APP_URL }}
+            
+            # Base image
+            mongodb_image=mongo:4.4.0
+            yolo5_image=${{ secrets.DOCKER_REPO_USERNAME }}/yolo5:${{ github.run_number }}
+            polybot_image=${{ secrets.DOCKER_REPO_USERNAME }}/polybot:${{ github.run_number }}
+            
+            # Container names
+            mongo_primary_container_name=mongodb_primary
+            mongo_secondary_1_container_name=mongodb_secondary_1
+            mongo_secondary_2_container_name=mongodb_secondary_2
+            yolo_container_name=yolo_app
+            polybot_container_name=polybot_app
+            
+            # Networks names
+            mongodb_replica_set=mongodb_replica_set
+            mongodb_primary_to_yolo=mongodb_primary_to_yolo
+            yolo_to_polybot=yolo_to_polybot
+            driver=bridge
+            
+            # AWS variables
+            BUCKET_NAME=${{ secrets.BUCKET_NAME }}
+            TELEGRAM_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+            TELEGRAM_AUTOTOKEN=${{ secrets.TELEGRAM_AUTOTOKEN }}
             """ > .env
             
-            docker compose down
-            docker compose up -d
-
+            docker-compose down
+            docker-compose up -d
