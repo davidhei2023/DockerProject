@@ -20,7 +20,7 @@ jobs:
           cd polybot
           
           echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
-          POLYBOT_IMAGE_NAME=davidhei/dockerproject:polybot-${{ github.run_number }}
+          POLYBOT_IMG_NAME=davidhei/dockerproject:polybot-${{ github.run_number }}
           docker build -t $POLYBOT_IMAGE_NAME .
           docker push $POLYBOT_IMAGE_NAME
 
@@ -35,7 +35,7 @@ jobs:
           cd yolo5
           
           echo "${{ secrets.DOCKER_REPO_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_REPO_USERNAME }}" --password-stdin
-          YOLO5_IMAGE_NAME=davidhei/dockerproject:yolo5-${{ github.run_number }}
+          YOLO5_IMG_NAME=davidhei/dockerproject:yolo5-${{ github.run_number }}
           docker build -t $YOLO5_IMAGE_NAME .
           docker push $YOLO5_IMAGE_NAME
 
