@@ -84,4 +84,3 @@ volumes:
     driver: local
   mongo_3_data:
     driver: local
-
