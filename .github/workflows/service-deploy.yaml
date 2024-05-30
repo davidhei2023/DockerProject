@@ -77,8 +77,8 @@ jobs:
             echo """
             
             MONGO_IMAGE=mongo:5
-            YOLO5_IMAGE_NAME=davidhei/dockerproject:yolo5-${{ github.run_number }}
-            POLYBOT_IMAGE_NAME=davidhei/dockerproject:polybot-${{ github.run_number }}
+            YOLO5_IMG_NAME=davidhei/dockerproject:yolo5-${{ github.run_number }}
+            POLYBOT_IMG_NAME=davidhei/dockerproject:polybot-${{ github.run_number }}
             BUCKET_NAME=${{ secrets.BUCKET_NAME }}
             TELEGRAM_APP_URL=${{ secrets.TELEGRAM_APP_URL }}
             TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}
