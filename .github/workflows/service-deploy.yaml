@@ -85,4 +85,4 @@ jobs:
             """ > .env
             
             docker-compose down
-            docker-compose up -d
+            docker-compose up -d #add initialize if here
