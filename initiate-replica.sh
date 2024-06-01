@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 5
+sleep 10
 
 echo "Initiating replica set..."
 mongosh --host mongo_1:27017 --eval "rs.initiate({
@@ -12,5 +12,5 @@ mongosh --host mongo_1:27017 --eval "rs.initiate({
   ]
 })"
 
-#tail -f /dev/null
+tail -f /dev/null
 
