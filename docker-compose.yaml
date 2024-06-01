@@ -74,7 +74,7 @@ services:
 
   mongo_init:
     container_name: mongo_init
-    image: ${MONGO_IMAGE}
+    image: mongo_init:latest
     depends_on:
       - mongo_1
       - mongo_2
