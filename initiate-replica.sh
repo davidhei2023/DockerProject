@@ -1,11 +1,9 @@
 #!/bin/bash
 
-mongod --replSet myReplicaSet --bind_ip_all &
-
-sleep 10
+sleep 5
 
 echo "Initiating replica set..."
-mongosh --eval "rs.initiate({
+mongosh --host mongo_1:27017 --eval "rs.initiate({
   _id: 'myReplicaSet',
   members: [
     { _id: 0, host: 'mongo_1:27017' },
@@ -14,5 +12,5 @@ mongosh --eval "rs.initiate({
   ]
 })"
 
-tail -f /dev/null
+#tail -f /dev/null
 
