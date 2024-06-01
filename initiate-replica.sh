@@ -3,7 +3,7 @@
 sleep 10
 
 echo "Initiating replica set..."
-mongosh --host mongo_1:27017 --eval "rs.initiate({
+mongosh --eval "rs.initiate({
   _id: 'myReplicaSet',
   members: [
     { _id: 0, host: 'mongo_1:27017' },
