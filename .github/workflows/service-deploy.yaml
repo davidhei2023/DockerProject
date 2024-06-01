@@ -86,6 +86,6 @@ jobs:
             
             docker-compose down
             docker-compose up -d #add initialize if here
-
+            sleep 10
             docker-compose up -d mongo_init
 
