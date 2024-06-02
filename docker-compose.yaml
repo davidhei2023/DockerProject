@@ -14,6 +14,7 @@ services:
       - mongoCluster
     command: mongod --replSet myReplicaSet --bind_ip_all
 
+
   mongo_2:
     container_name: mongo_2
     image: ${MONGO_IMAGE}
@@ -68,9 +69,9 @@ services:
     networks:
       - mongoCluster
     depends_on:
-      - mongo_1
-      - mongo_2
-      - mongo_3
+      mongo_init:
+        condition:
+          service_healthy
 
   mongo_init:
     container_name: mongo_init
@@ -86,6 +87,11 @@ services:
     networks:
       - mongoCluster
     entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/initiate-replica.sh"]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 5s
+      retries: 2
 
 networks:
   mongoCluster:
