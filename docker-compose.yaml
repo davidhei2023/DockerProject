@@ -37,11 +37,12 @@ services:
       - "27019:27017"
     volumes:
       - mongo_3_data:/data/db
+      - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh
     env_file:
       - .env
     networks:
       - mongoCluster
-    command: mongod --replSet myReplicaSet --bind_ip_all
+    command: mongod --replSet myReplicaSet --bind_ip_all && /docker-entrypoint-initdb.d/initiate-replica.sh
     depends_on:
       - mongo_1
 
@@ -72,19 +73,6 @@ services:
       - mongoCluster
     depends_on:
       - mongo_init
-
-  mongo_init:
-    container_name: mongo_init
-    image: davidhei/dockerproject:mongo_init
-    volumes:
-      - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh
-    env_file:
-      - .env
-    networks:
-      - mongoCluster
-    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/initiate-replica.sh"]
-    depends_on:
-      - mongo_3
 
 
 networks:
