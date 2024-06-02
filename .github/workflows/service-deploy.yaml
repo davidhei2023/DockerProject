@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  EC2_PUBLIC_IP: 18.223.134.220  # to be updated
+  EC2_PUBLIC_IP: 3.22.186.140  # to be updated
 
 jobs:
   PolybotBuild:
