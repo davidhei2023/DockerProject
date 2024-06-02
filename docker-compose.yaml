@@ -45,6 +45,7 @@ services:
     command: mongod --replSet myReplicaSet --bind_ip_all && /docker-entrypoint-initdb.d/initiate-replica.sh
     depends_on:
       - mongo_1
+      - mongo_2
 
   polybot:
     container_name: polybot
@@ -58,7 +59,7 @@ services:
     networks:
       - mongoCluster
     depends_on:
-      - mongo_init
+      - mongo_3
 
   yolo5_app:
     container_name: yolo5_app
@@ -72,7 +73,7 @@ services:
     networks:
       - mongoCluster
     depends_on:
-      - mongo_init
+      - mongo_3
 
 
 networks:
