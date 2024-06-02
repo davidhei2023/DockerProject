@@ -1,5 +1,5 @@
 #!/bin/bash
-
+sleep 2
 echo "Initiating replica set..."
 mongosh --eval "rs.initiate({
   _id: 'myReplicaSet',
