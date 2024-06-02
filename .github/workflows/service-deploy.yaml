@@ -86,7 +86,8 @@ jobs:
             """ > .env
             
             docker-compose down
-            docker-compose up -d   #add initialize if here
-            sleep 60              
-            curl -O -L https://raw.githubusercontent.com/alonitac/PolybotServiceDocker/main/test/test-compose-project.sh
-            bash test-compose-project.sh
+            docker-compose up -d mongo_1 mongo_2 mongo_3
+            sleep 10
+            docker compose up mongo_init
+            sleep 10
+            docker compose up polybot yolo5_app
