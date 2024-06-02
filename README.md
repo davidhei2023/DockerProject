@@ -1,7 +1,7 @@
 Welcome to my PolyBot Image Prediction Bot
 Hello and welcome! PolyBot is a Telegram bot designed to help you analyze images and provide predictions based on advanced machine learning models. Follow the instructions below to start using PolyBot and see the magic happen!
 
-How to Use PolyBot
+How to Use PolyBot 
 Connect to PolyBot on Telegram:
 
 Open the Telegram app on your device.
