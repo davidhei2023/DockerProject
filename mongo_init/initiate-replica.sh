@@ -1,5 +1,17 @@
 #!/bin/bash
-sleep 1
+
+check_mongo_ready() {
+  container=$1
+  until docker exec $container mongo --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+    echo "Waiting for $container to be ready..."
+    sleep 2
+  done
+}
+
+check_mongo_ready mongo_1
+check_mongo_ready mongo_2
+check_mongo_ready mongo_3
+
 echo "Initiating replica set..."
 mongosh --eval "rs.initiate({
   _id: 'myReplicaSet',
@@ -11,4 +23,3 @@ mongosh --eval "rs.initiate({
 })"
 
 tail -f /dev/null
-

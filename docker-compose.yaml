@@ -54,12 +54,12 @@ services:
       - mongo_2
       - mongo_3
     volumes:
-      - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh
+      - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh:ro
     env_file:
       - .env
     networks:
       - mongoCluster
-    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/initiate-replica.sh"]
+    entrypoint: [ "/bin/bash", "/docker-entrypoint-initdb.d/initiate-replica.sh" ]
 
   polybot:
     container_name: polybot
