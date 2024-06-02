@@ -37,15 +37,29 @@ services:
       - "27019:27017"
     volumes:
       - mongo_3_data:/data/db
+    env_file:
+      - .env
+    networks:
+      - mongoCluster
+    command: mongod --replSet myReplicaSet --bind_ip_all
+    depends_on:
+      - mongo_1
+      - mongo_2
+
+  mongo_init:
+    container_name: mongo_init
+    image: ${MONGO_IMAGE}
+    depends_on:
+      - mongo_1
+      - mongo_2
+      - mongo_3
+    volumes:
       - ./initiate-replica.sh:/docker-entrypoint-initdb.d/initiate-replica.sh
     env_file:
       - .env
     networks:
       - mongoCluster
-    command: mongod --replSet myReplicaSet --bind_ip_all && /docker-entrypoint-initdb.d/initiate-replica.sh
-    depends_on:
-      - mongo_1
-      - mongo_2
+    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/initiate-replica.sh"]
 
   polybot:
     container_name: polybot
