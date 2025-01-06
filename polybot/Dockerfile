@@ -1,8 +1,7 @@
-FROM python:3.10-alpine
-WORKDIR /usr/src/app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+FROM python:3.12-slim
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 8443
 
-COPY . .
-
-CMD ["python3", "app.py"]
+CMD ["python", "app.py"]
